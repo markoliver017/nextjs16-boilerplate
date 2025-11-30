@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Boilerplate
 
-## Getting Started
+## Installation
 
-First, run the development server:
+```bash
+npx create-next-app@latest
+```
+
+## Usage
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Shadcn
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dlx shadcn@latest init
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Add Shadcn components
 
-## Learn More
+```bash
+pnpm dlx shadcn@latest add button
+```
 
-To learn more about Next.js, take a look at the following resources:
+# Drizzle
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm add drizzle-orm mysql2 dotenv
+pnpm add -D drizzle-kit tsx
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Drizzle connection
 
-## Deploy on Vercel
+```typescript
+// src/db/index.ts
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
+import * as dotenv from "dotenv";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+dotenv.config({ path: ".env.development" });
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+const poolConnection = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+});
+drizzle({ client: poolConnection });
+
+// or if you need client connection
+async function main() {
+    const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+    });
+    drizzle({ client: connection });
+}
+main();
+```
+
+# Drizzle config
+
+```typescript
+// drizzle.config.ts
+import * as dotenv from "dotenv";
+import { defineConfig } from "drizzle-kit";
+dotenv.config({ path: ".env" });
+
+export default defineConfig({
+    out: "./drizzle",
+    schema: ["./src/db/auth-schema.ts", "./src/db/schema.ts"],
+    dialect: "mysql",
+    dbCredentials: {
+        url: process.env.DATABASE_URL!,
+    },
+});
+```
+
+# Drizzle schema
+
+```typescript
+// src/db/schema.ts
+import { int, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core";
+
+export const usersTable = mysqlTable("users", {
+    id: serial().primaryKey(),
+    name: varchar({ length: 255 }).notNull(),
+    age: int().notNull(),
+    email: varchar({ length: 255 }).notNull().unique(),
+});
+```
