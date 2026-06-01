@@ -1,7 +1,7 @@
 "use server";
 
-import { getAllUser } from "@/src/db/queries/users.queries";
-import { verifySession } from "./auth.actions";
+import { verifySession } from "../auth/auth.actions";
+import { getAllUser } from "./users.data";
 
 export const fetchAllUsers = async () => {
     const session = await verifySession();

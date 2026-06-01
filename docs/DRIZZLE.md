@@ -12,7 +12,7 @@ Deploy
 Step 1 — Edit schema
 You update your TS schema files manually.
 Step 2 — Generate migration
-npx drizzle-kit generate
+
 Step 3 — Run migration
 npx drizzle-kit up
 Step 4 — Database is updated

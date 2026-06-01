@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/node-postgres";
 import * as dotenv from "dotenv";
 import * as authSchema from "./schema/auth-schema";
 import * as appSchema from "./schema/schema";
@@ -7,9 +7,8 @@ dotenv.config({ path: ".env" });
 
 const schema = { ...authSchema, ...appSchema };
 
-export const db = drizzle(process.env.DATABASE_URL || "", {
+export const db = drizzle(process.env.DATABASE_URL!, {
     schema,
-    mode: "default",
 });
 
 // async function main() {

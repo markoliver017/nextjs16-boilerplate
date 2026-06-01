@@ -4,9 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { headers } from "next/headers";
 import TansactProvider from "@/components/layout/TansactProvider";
-import { RouteProgress } from "@/components/route-progress";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { RouteProgress } from "@/components/layout/route-progress";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({

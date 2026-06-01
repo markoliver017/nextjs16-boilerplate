@@ -1,8 +1,8 @@
 "use client";
 
-import { resendVerificationEmail } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { resendVerificationEmail } from "../auth.actions";
 
 interface ResendVerificationButtonProps {
     email: string;

@@ -1,4 +1,4 @@
-import { HeroSlider } from "@/components/hero-slider";
+import { HeroSlider } from "@/components/home/hero-slider";
 import React from "react";
 
 export default function page() {

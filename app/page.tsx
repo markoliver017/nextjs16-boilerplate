@@ -1,7 +1,5 @@
-import { Header } from "@/components/header";
-import { HeroSection } from "@/components/hero-section";
-import { ArticleListSection } from "@/components/article-list-section";
-import { Footer } from "@/components/footer";
+import { HeroSection } from "@/components/home/hero-section";
+import { ArticleListSection } from "@/components/home/article-list-section";
 
 export default function Home() {
     return (
@@ -10,6 +8,7 @@ export default function Home() {
                 backgroundImage="/slides-1.jpg"
                 useGradientOverlay={true}
             />
+
             <ArticleListSection />
         </>
     );

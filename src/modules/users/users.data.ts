@@ -1,7 +1,7 @@
-import { SignUpValues } from "@/lib/validators/auth";
-import { db } from "../index";
+import { db } from "@/src/db";
 import { user } from "@/src/db/schema/auth-schema";
 import { eq } from "drizzle-orm";
+import { NewUserType } from "./users.types";
 
 export const getAllUser = async () => {
     return db.query.user.findMany();
@@ -20,13 +20,13 @@ export const getUserByEmail = async (email: string) => {
 };
 
 export const createUser = async (
-    data: Omit<typeof user.$inferInsert, "id">
+    data: NewUserType
+    // data: Omit<typeof user.$inferInsert, "id">
 ) => {
-    const id = crypto.randomUUID();
-    return db.insert(user).values({ ...data, id });
+    return db.insert(user).values(data);
 };
 
-export const updateUser = async (data: Partial<typeof user.$inferInsert>) => {
+export const updateUser = async (data: Partial<NewUserType>) => {
     return db.update(user).set(data);
 };
 export const deleteUser = async (id: string) => {

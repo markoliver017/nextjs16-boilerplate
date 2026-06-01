@@ -1,4 +1,15 @@
+import { user } from "@/src/db/schema/auth-schema";
+import {
+    createInsertSchema,
+    createSelectSchema,
+    createUpdateSchema,
+} from "drizzle-zod";
 import { z } from "zod";
+
+//zod schema export
+export const zUserSelectSchema = createSelectSchema(user);
+export const zUserInsertSchema = createInsertSchema(user);
+export const zUserUpdateSchema = createUpdateSchema(user);
 
 export const signUpSchema = z.object({
     name: z

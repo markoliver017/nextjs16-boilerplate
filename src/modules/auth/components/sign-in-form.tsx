@@ -17,12 +17,12 @@ import { signInSchema, SignInValues } from "@/lib/validators/auth";
 import { useMutation } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import PreloaderAlert from "../layout/PreloaderAlert";
-import { MySwal, Toast } from "@/components/alerts/sweet-alert";
 import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
+import PreloaderAlert from "@/components/shared/PreloaderAlert";
+import { Toast } from "@/components/shared/sweet-alert";
 
 export function SignInForm() {
     const [googleSigningIn, setGoogleSigningIn] = useState(false);

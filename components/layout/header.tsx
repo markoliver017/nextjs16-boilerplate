@@ -51,7 +51,7 @@ export function Header() {
                 {/* Right side actions */}
                 <div className="flex items-center space-x-4">
                     <ThemeToggleButton />
-                    
+
                     {/* Mobile Menu */}
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild className="md:hidden">

@@ -1,5 +1,5 @@
-import { verifySession } from "@/actions/auth.actions";
-import { sendEmail } from "@/utils/mail.utils";
+import { sendEmail } from "@/lib/utils/mail.utils";
+import { verifySession } from "@/src/modules/auth/auth.actions";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 

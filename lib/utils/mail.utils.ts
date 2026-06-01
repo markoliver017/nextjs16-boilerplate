@@ -1,13 +1,5 @@
-import nodemailer from "nodemailer";
 import { z } from "zod";
-
-export interface SendEmailProps {
-    to: string;
-    subject: string;
-    html?: string;
-    text?: string;
-    attachFiles?: string[];
-}
+import nodemailer from "nodemailer";
 
 // 1. Define the validation schema
 const sendEmailSchema = z.object({

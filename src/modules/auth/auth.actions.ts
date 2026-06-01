@@ -2,43 +2,51 @@
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-// import { db } from "@/src/db";
-// import { user } from "@/src/db/auth-schema";
-// import { eq } from "drizzle-orm";
-
-import { resendVerificationSchema } from "@/lib/validators/auth";
+import {
+    resendVerificationSchema,
+    ResendVerificationValues,
+} from "@/lib/validators/auth";
 import z from "zod";
+import { UserSession } from "@/lib/global-types/globals";
 
-export const resendVerificationEmail = async (values: { email: string }) => {
+export const resendVerificationEmail = async (
+    values: ResendVerificationValues
+) => {
     try {
         const validatedData = resendVerificationSchema.safeParse(values);
-        console.log("Validated Data", validatedData);
+
         if (!validatedData.success) {
             const { fieldErrors } = z.flattenError(validatedData.error);
             return { error: "Validation failed: " + fieldErrors?.email };
         }
+
         await auth.api.sendVerificationEmail({
             body: {
                 email: validatedData.data.email,
                 callbackURL: "/auth-welcome",
             },
         });
+
         return { success: true };
     } catch (error: any) {
         return { error: error.message || "An unknown error occurred." };
     }
 };
 
-export const verifySession = async () => {
+export const verifySession = async (): Promise<UserSession | null> => {
     const nextHeaders = await headers();
     const session = await auth.api.getSession({
         headers: nextHeaders,
     });
 
-    if (!session?.user) {
-        redirect("/sign-in");
-    }
+    if (!session?.user) return null;
 
-    return { isAuth: true, userId: session.user.id };
+    return {
+        userId: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        roleId: (session.user as any).roleId,
+        roleName: (session.user as any).roleName,
+        roleLevel: (session.user as any).roleLevel,
+    };
 };

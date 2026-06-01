@@ -126,14 +126,99 @@
     body {
         @apply bg-background text-foreground;
     }
-    h1 {
-        @apply text-5xl font-extrabold;
+
+    .h1 {
+        @apply text-3xl font-extrabold tracking-tight md:text-5xl lg:text-6xl leading-[1.1];
     }
-    h2 {
-        @apply text-3xl font-extrabold;
+
+    .h2 {
+        @apply text-2xl font-bold tracking-tight md:text-4xl leading-snug;
     }
-    h3 {
-        @apply text-xl font-bold;
+
+    .h3 {
+        @apply text-xl font-bold md:text-2xl leading-snug;
+    }
+
+    .h4 {
+        @apply text-lg font-semibold md:text-xl;
+    }
+
+    /* --- BODY & LABELS --- */
+
+    .text-lead {
+        @apply text-lg font-normal text-slate-600 dark:text-slate-300 md:text-xl leading-relaxed;
+    }
+
+    .text-body {
+        @apply text-base font-normal leading-relaxed;
+    }
+
+    .text-sub {
+        @apply text-sm font-normal leading-normal;
+    }
+
+    .text-label {
+        @apply text-xs font-bold uppercase tracking-widest md:text-sm;
+    }
+
+    /* --- COLOR THEMES --- */
+
+    /* Surface/Background themes */
+    .bg-base {
+        @apply bg-white dark:bg-slate-950;
+    }
+
+    .bg-soft {
+        @apply bg-slate-50 dark:bg-slate-900;
+    }
+
+    /* Text Color Themes */
+    .theme-base {
+        @apply text-slate-900 dark:text-slate-50;
+    }
+
+    .theme-muted {
+        @apply text-slate-500 dark:text-slate-400;
+    }
+
+    .theme-primary {
+        @apply text-indigo-600 dark:text-indigo-400;
+    }
+
+    .theme-accent {
+        @apply text-emerald-600 dark:text-emerald-400;
+    }
+
+    .theme-error {
+        @apply text-red-600 dark:text-red-400;
+    }
+
+    /* SECTION PADDING: For vertical spacing between large blocks */
+    /* Mobile: 2rem (32px) -> Desktop: 6rem (96px) */
+    .section-padding {
+        @apply py-8 md:py-16 lg:py-24;
+    }
+
+    /* CONTAINER PADDING: For horizontal inner spacing */
+    /* Ensures content doesn't hit the screen edges on mobile */
+    .container-padding {
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+
+    /* CARD PADDING: For inner spacing of boxes/cards */
+    .card-padding {
+        @apply p-4 md:p-6 lg:p-8;
+    }
+
+    /* STACK PADDING: For vertical spacing between elements (e.g., inside a card) */
+    .stack-sm {
+        @apply space-y-2;
+    }
+    .stack-md {
+        @apply space-y-4 md:space-y-6;
+    }
+    .stack-lg {
+        @apply space-y-8 md:space-y-12;
     }
 }
 

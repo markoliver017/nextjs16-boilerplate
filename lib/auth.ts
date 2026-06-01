@@ -1,13 +1,11 @@
 import { db } from "@/src/db";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { sendEmail } from "@/utils/mail.utils";
+import { sendEmail } from "@/lib/utils/mail.utils";
 import { customSession } from "better-auth/plugins";
-
-const getAppUrl = () => {
-    const url = process.env.APP_URL?.trim() || "http://localhost:3000";
-    return url.endsWith("/") ? url.slice(0, -1) : url;
-};
+import { buildPCMCEmailHtml } from "./email-templates/email-auth";
+import { logError } from "./utils/audit.utils";
+import { getAppUrl } from "./utils/global.utils";
 
 const APP_NAME = process.env.APP_NAME || "Next.js Boilerplate";
 const APP_URL = getAppUrl();
@@ -22,37 +20,6 @@ const trustedOrigins = Array.from(
     )
 );
 
-const buildEmailBody = (
-    heading: string,
-    message: string,
-    ctaLabel: string,
-    ctaHref: string
-) => `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${heading}</title>
-    <style>
-      body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f4f5; color: #111; padding: 32px; }
-      .wrapper { max-width: 480px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12); }
-      h1 { font-size: 20px; margin-bottom: 16px; }
-      p { line-height: 1.6; margin-bottom: 24px; }
-      a.btn { display: inline-block; padding: 12px 24px; border-radius: 9999px; background: #111827; color: #ffffff !important; text-decoration: none; font-weight: 600; }
-      .footer { margin-top: 32px; font-size: 12px; color: #6b7280; text-align: center; }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <h1>${heading}</h1>
-      <p>${message}</p>
-      <a class="btn" href="${ctaHref}" target="_blank" rel="noopener noreferrer">${ctaLabel}</a>
-      <p style="margin-top:24px; font-size: 13px; color:#6b7280;">If the button doesn't work, copy and paste this link into your browser:<br /><span style="word-break: break-all;">${ctaHref}</span></p>
-      <div class="footer">Sent by ${APP_NAME}</div>
-    </div>
-  </body>
-</html>`;
-
 export const auth = betterAuth({
     trustedOrigins,
     database: drizzleAdapter(db, {
@@ -61,6 +28,26 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
+        sendResetPassword: async ({ user, url, token }, request) => {
+            const html = buildPCMCEmailHtml(
+                APP_NAME,
+                "Reset Your Password",
+                `Hello ${user.name},<br/><br/>We received a request to reset the password for your PCMC Incentives account. If you did not make this request, please ignore this email.`,
+                "Reset Password",
+                url,
+                "For security, this link is valid for 1 hour only."
+            );
+            void sendEmail({
+                to: user.email,
+                subject: `Reset your password - ${APP_NAME}`,
+                text: `Click the link to reset your password: ${url}`,
+                html,
+            });
+        },
+        onPasswordReset: async ({ user }, request) => {
+            // your logic here
+            console.log(`Password for user ${user.email} has been reset.`);
+        },
     },
     socialProviders: {
         google: {
@@ -75,19 +62,30 @@ export const auth = betterAuth({
             const name = user.name?.trim() || "there";
             const subject = `Verify your ${APP_NAME} email`;
             const text = `Hi ${name},\n\nConfirm your email by visiting: ${verificationUrl}\n\nIf you did not create an account, you can ignore this message.`;
-            const html = buildEmailBody(
+            const html = buildPCMCEmailHtml(
+                APP_NAME,
                 "Confirm your email",
                 `Hi ${name},<br /><br />Thanks for creating an account with ${APP_NAME}. Click the button below to verify your email address and finish setting up your account.`,
                 "Verify email",
                 verificationUrl
             );
 
-            await sendEmail({
+            const res = await sendEmail({
                 to: user.email,
                 subject,
                 text,
                 html,
             });
+            if (!res.success) {
+                await logError(
+                    "LvDJVJ8cCiKA3D7KFtizq2vDxKnLuSw7",
+                    "auth",
+                    "send_verification_email",
+                    `${user.email} - ${
+                        res.error || "Failed to send verification email"
+                    }`
+                );
+            }
         },
     },
     session: {
